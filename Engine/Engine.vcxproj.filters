@@ -51,6 +51,21 @@
     <ClInclude Include="Object\Actor.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Matrix22.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix33.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Scene.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Particles.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ParticalSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -73,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="Object\Actor.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Scene.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ParticalSystem.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -22,4 +22,18 @@ namespace nc
 		return stream;
 	}
 
+	void Transform::update()
+	{
+		nc::Matrix33 mxs;
+		mxs.Scale(scale);
+
+		nc::Matrix33 mxr;
+		mxr.Rotate(angle);
+
+		nc::Matrix33 mxt;
+		mxt.Translate(position);
+
+		matrix = mxs * mxr * mxt;
+	}
+
 }

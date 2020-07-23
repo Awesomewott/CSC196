@@ -2,11 +2,12 @@
 #include <random>
 namespace nc
 {
-	float random()
+	inline float random()
 	{
 		return rand() / static_cast<float>(RAND_MAX); // 0- RAND_MAX -> 0 / 10 = 0 | 5 / 10 = 0.5 | 
 	}
-	float random(float min, float max) // 6.0 - 10.0
+	
+	inline float random(float min, float max) // 6.0 - 10.0
 	{
 		if (min > max)
 		{

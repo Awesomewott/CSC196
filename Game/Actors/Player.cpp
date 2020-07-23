@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Math/Math2.h"
+#include "Projectile.h"
+#include "Object/Scene.h"
+#include "Graphics/ParticalSystem.h"
 #include <fstream>
 
 bool Player::Load(const std::string& filename)
@@ -15,14 +18,14 @@ bool Player::Load(const std::string& filename)
 			// set success to true
 			// stream >> into transform
 			success = true;
-			stream >> m_transform;
-
-			std::string shapename;
-			stream >> shapename;
-			m_shape.Load(shapename);
+			Actor::Load(stream);
+			std::string line;
+			std::getline(stream, line);
+			m_thrust = stof(line);
+			std::getline(stream, line);
+			m_rotationRate = stof(line);
 			stream.close();
 
-			success = true;
 		}
 		return success;
 	}
@@ -30,36 +33,28 @@ bool Player::Load(const std::string& filename)
 
 void Player::Update(float dt)
 {
+	m_firetimer += dt;
+	if (Core::Input::IsPressed(VK_SPACE) && m_firetimer >= m_firerate)
+	{
+		m_firetimer = 0;
+
+		Projectile* projectile = new Projectile;
+		projectile->Load("projectile.txt");
+		projectile->GetTransform().position = m_transform.position;
+		projectile->GetTransform().angle = m_transform.angle;
+		m_scene->AddActor(projectile);
+
+	}
+	//get force
 	nc::Vector2 force;
 	if (Core::Input::IsPressed('W')) { force = nc::Vector2::forward * m_thrust; }
 	force = nc::Vector2::Rotate(force, m_transform.angle);
 
-	//force = force + nc::Vector2{ 0, 100 };
-	//gravity
-	//nc::Vector2 direction = nc::Vector2{ 400, 300 } -player.GetTransform().position;
-	//if (direction.Length() <= 200.0f)
-	//{
-	//	float strength = 1.0f - (direction.Length() / 200.0f); // (0 - 200) -> (0 - 1) -> (1 - 0)
-	//	direction.Normilize();
-	//	force = force + (direction * 300.0f * strength);
-	//}
-
-	//direction.Normilize();
-	//force = force + (direction * 200.0f);
-
-	//nc::Vector2 direction = force * dt;
+	
 
 	m_velocity = m_velocity + (force * dt);
 	m_velocity = m_velocity * 0.98f;
 	m_transform.position = m_transform.position + (m_velocity * dt);
-	
-
-	
-
-	//player.GetTransform().position = nc::Clamp(player.GetTransform().position, nc::Vector2{ 0, 0 }, nc::Vector2{ 800, 600 });
-
-	//player.GetTransform().position.x = nc::Clamp<float>(player.GetTransform().position.x, 0.0f, 800.0f);
-	//player.GetTransform().position.y = nc::Clamp<float>(player.GetTransform().position.y, 0.0f, 600.0f);
 
 
 	if (m_transform.position.x > 800) m_transform.position.x = 0;
@@ -67,31 +62,19 @@ void Player::Update(float dt)
 	if (m_transform.position.y > 600) m_transform.position.y = 0;
 	if (m_transform.position.y < 0) m_transform.position.y = 600;
 
-	//	if (direction.Length() < 150.0f)
-		//{
-		//	position = position + (-direction * speed);
-		//}
-		//position = nc::Vector2{ x, y };
-
-		//for (nc::Vector2& point : points)
-		//{
-		//	point = nc::Vector2{ nc::random(-10.0f, 10.0f), nc::random(-10.0f, 10.0f) };
-		//}
-		/*
-		for (size_t i = 0; i < NUM_POINTS; i++)
-		{
-			points[i] = nc::Vector2{ nc::random(-10.0f, 10.0f), nc::random(-10.0f, 10.0f) };
-		}
-
-		*/
-		//if (Core::Input::IsPressed('A')) position += nc::Vector2::left * (speed * dt);
-		//if (Core::Input::IsPressed('D')) position += nc::Vector2::right * (speed * dt);
-		//if (Core::Input::IsPressed('W')) position += nc::Vector2{ 0.0f, -1.0f } * speed;
-		//if (Core::Input::IsPressed('S')) position += nc::Vector2{ 0.0f, 1.0f } * speed;
-
+	
 
 	if (Core::Input::IsPressed('A')) m_transform.angle -= dt * nc::DegreesToRadians(360.0f);
 	if (Core::Input::IsPressed('D')) m_transform.angle += dt * nc::DegreesToRadians(360.0f);
+
+
+	if (force.LengthSqr() > 0)
+	{
+		g_particleSystem.Create(m_transform.position, m_transform.angle + nc::PI, 25, 1, 1, nc::Color{ 1,1,0 }, 100, 200);
+	}
+
+
+	m_transform.update();
 }
 
 

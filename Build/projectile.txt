@@ -1,5 +1,5 @@
 { 200, 100 }
 1
 0
-ship.txt
+Bullet.txt
 100.0
